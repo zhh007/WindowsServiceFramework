@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{494C13BC-0C7F-4A4D-BD73-A887ED94F59C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Service.Core</RootNamespace>
+    <AssemblyName>Service.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Service.Core.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Service.Core.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Service.Core.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Service.Core.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\log4net\log4net.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.79.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Channels" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataAccess\Massive\Massive.cs" />
+    <Compile Include="DataAccess\Massive\Massive.Oracle.cs" />
+    <Compile Include="DataAccess\Massive\Massive.PostgreSQL.cs" />
+    <Compile Include="ExceptionHandler\ExceptionHandlerBase.cs" />
+    <Compile Include="ExceptionHandler\HandledExceptionHandler.cs" />
+    <Compile Include="ExceptionHandler\UnhandledExceptionHandler.cs" />
+    <Compile Include="ExceptionHandler\Utility\ConfigurationHandler.cs" />
+    <Compile Include="ExceptionHandler\Utility\Settings.cs" />
+    <Compile Include="ExceptionHandler\Utility\Utilities.cs" />
+    <Compile Include="Extensibility\ActionParameters.cs" />
+    <Compile Include="Extensibility\ActionResult.cs" />
+    <Compile Include="Extensibility\IExtensibility.cs" />
+    <Compile Include="Log\Configuration\FileLoggerConfiguration.cs" />
+    <Compile Include="Log\Configuration\LoggerConfigurationBase.cs" />
+    <Compile Include="Log\Configuration\SQLLoggerConfiguration.cs" />
+    <Compile Include="Log\FileLogger.cs" />
+    <Compile Include="Log\ILogger.cs" />
+    <Compile Include="Log\LoggingEnum.cs" />
+    <Compile Include="Log\LogRecord.cs" />
+    <Compile Include="Log\SQLLogger.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceAdmin\UI\frmConfigurationEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ServiceAdmin\UI\frmConfigurationEditor.Designer.cs">
+      <DependentUpon>frmConfigurationEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceAdmin\UI\frmLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ServiceAdmin\UI\frmLogin.designer.cs">
+      <DependentUpon>frmLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceAdmin\UI\frmLogViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ServiceAdmin\UI\frmLogViewer.Designer.cs">
+      <DependentUpon>frmLogViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceAdmin\UI\frmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ServiceAdmin\UI\frmMain.designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceAdmin\UI\frmServiceControl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ServiceAdmin\UI\frmServiceControl.Designer.cs">
+      <DependentUpon>frmServiceControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceAdmin\Utility\Logging.cs" />
+    <Compile Include="ServiceAdmin\Utility\Settings.cs" />
+    <Compile Include="ServiceAdmin\Utility\Utilities.cs" />
+    <Compile Include="StatusDatabase\DatabaseController.cs" />
+    <Compile Include="StatusDatabase\DatabaseInstaller.cs" />
+    <Compile Include="DataAccess\Massive\Massive.Sqlite.cs" />
+    <Compile Include="StatusDatabase\DataTableClass\Service.cs" />
+    <Compile Include="StatusDatabase\DataTableClass\ServiceCommand.cs" />
+    <Compile Include="StatusDatabase\DataTableClass\ServiceMonitor.cs" />
+    <Compile Include="StatusDatabase\DataTableClass\ServiceStatus.cs" />
+    <Compile Include="StatusDatabase\Service.cs" />
+    <Compile Include="StatusDatabase\SQLite.cs" />
+    <Compile Include="StatusDatabase\Utility\Logging.cs" />
+    <Compile Include="Utility\BaseClasses\LoggingBase.cs" />
+    <Compile Include="Utility\BaseClasses\SettingsBase.cs" />
+    <Compile Include="Utility\BaseClasses\TimersBase.cs" />
+    <Compile Include="Utility\BaseClasses\UtilitiesBase.cs" />
+    <Compile Include="Utility\FileWatch\FileWatcher.cs" />
+    <Compile Include="Utility\FileWatch\FileWatcherEventAttributes.cs" />
+    <Compile Include="Utility\FileWatch\FileWatcherParameters.cs" />
+    <Compile Include="Utility\FileWatch\FileWatchers.cs" />
+    <Compile Include="Utility\Timer\ScheduleTime.cs" />
+    <Compile Include="Utility\Utility\Logging.cs" />
+    <Compile Include="Utility\Utility\Settings.cs" />
+    <Compile Include="Utility\Utility\Utilities.cs" />
+    <Compile Include="WindowsService\Service\ServiceAttributes.cs" />
+    <Compile Include="WindowsService\Service\ServiceCommands.cs" />
+    <Compile Include="WindowsService\Service\ServiceControl.cs" />
+    <Compile Include="WindowsService\Service\ServiceInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WindowsService\Service\ServiceInstaller.Designer.cs">
+      <DependentUpon>ServiceInstaller.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WindowsService\Service\WindowsService.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WindowsService\Service\WindowsService.designer.cs">
+      <DependentUpon>WindowsService.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WindowsService\Utility\Logging.cs" />
+    <Compile Include="WindowsService\Utility\Settings.cs" />
+    <Compile Include="WindowsService\Utility\Timers.cs" />
+    <Compile Include="WindowsService\Utility\Utilities.cs" />
+    <Compile Include="WindowsService\WCF\IWcfContract.cs" />
+    <Compile Include="WindowsService\WCF\Service.cs" />
+    <Compile Include="WindowsService\WCF\ServiceCommandExtentionMethods.cs" />
+    <Compile Include="WindowsService\WCF\WcfService.cs" />
+    <Compile Include="WindowsService\WCF\WcfServiceHost.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Log\LoggingEngine.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ServiceAdmin\UI\frmConfigurationEditor.resx">
+      <DependentUpon>frmConfigurationEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ServiceAdmin\UI\frmLogin.resx">
+      <DependentUpon>frmLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ServiceAdmin\UI\frmLogViewer.resx">
+      <DependentUpon>frmLogViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ServiceAdmin\UI\frmMain.resx">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ServiceAdmin\UI\frmServiceControl.resx">
+      <DependentUpon>frmServiceControl.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

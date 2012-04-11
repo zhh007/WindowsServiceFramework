@@ -1,0 +1,54 @@
+﻿using System;
+using System.Configuration.Install;
+using System.Reflection;
+using System.ServiceProcess;
+using MonitorService.Service;
+using MonitorService.Utility;
+using Service.Core.Log;
+using SC_StatusDb = Service.Core.StatusDatabase;
+
+namespace MonitorService {
+
+	internal static class Program {
+
+		/// <summary>
+		/// The main entry point for the application.
+		/// </summary>
+		internal static void Run(string[] args) {
+			string opt = args.Length > 0 ? args[0] : string.Empty;
+
+			if (string.IsNullOrEmpty(opt)) {
+				ServiceBase[] ServicesToRun;
+				ServicesToRun = new ServiceBase[] { new WindowsService() };
+				ServiceBase.Run(ServicesToRun);
+			}
+			else {
+				try {
+					switch (opt.ToLower()) {
+						case "/install":
+							Logging.Log(LogLevelEnum.Info, "Installing service");
+
+							ManagedInstallerClass.InstallHelper(new string[] { Assembly.GetExecutingAssembly().Location });
+
+							Logging.Log(LogLevelEnum.Info, "Service installed");
+
+							break;
+						case "/uninstall":
+							Logging.Log(LogLevelEnum.Info, "Uninstalling service");
+
+							ManagedInstallerClass.InstallHelper(new string[] { "/u", Assembly.GetExecutingAssembly().Location });
+
+							SC_StatusDb.DatabaseInstaller.RemoveService(new SC_StatusDb.Service { ServiceId = Settings.Instance.ServiceId, ServiceStatusDatabasePath = Settings.Instance.ServiceStatusDatabasePath }, Settings.Instance.LoggerConfiguration);
+
+							Logging.Log(LogLevelEnum.Info, "Service uninstalled");
+
+							break;
+					}
+				}
+				catch (Exception ex) {
+					Logging.Log(LogLevelEnum.Fatal, "Service install failed: " + FileLogger.GetInnerException(ex).Message);
+				}
+			}
+		}
+	}
+}
