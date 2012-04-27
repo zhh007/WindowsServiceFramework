@@ -210,6 +210,7 @@
     <None Include="Service.Core.licenseheader" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="LICENSE.txt" />
     <Content Include="Log\LoggingEngine.config" />
   </ItemGroup>
   <ItemGroup>
