@@ -1,3 +1,19 @@
+#region
+
+//New BSD License
+//http://www.opensource.org/licenses/bsd-license.php
+//Copyright (c) 2009, Rob Conery (robconery@gmail.com)
+//All rights reserved.
+//
+//Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+//
+//Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+//Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+//Neither the name of the SubSonic nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#endregion
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -8,17 +24,14 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 
-namespace Service.Core.Massive.PostgreSQL
-{
-	public static class ObjectExtensions
-	{
+namespace Service.Core.Massive.PostgreSQL {
+	public static class ObjectExtensions {
+
 		/// <summary>
 		/// Extension method for adding in a bunch of parameters
 		/// </summary>
-		public static void AddParams(this DbCommand cmd, params object[] args)
-		{
-			foreach (var item in args)
-			{
+		public static void AddParams(this DbCommand cmd, params object[] args) {
+			foreach (var item in args) {
 				AddParam(cmd, item);
 			}
 		}
@@ -26,29 +39,23 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// Extension for adding single parameter
 		/// </summary>
-		public static void AddParam(this DbCommand cmd, object item)
-		{
+		public static void AddParam(this DbCommand cmd, object item) {
 			var p = cmd.CreateParameter();
 			p.ParameterName = string.Format("@{0}", cmd.Parameters.Count);
-			if (item == null)
-			{
+			if (item == null) {
 				p.Value = DBNull.Value;
 			}
-			else
-			{
-				if (item.GetType() == typeof(Guid))
-				{
+			else {
+				if (item.GetType() == typeof(Guid)) {
 					p.Value = item.ToString();
 					p.DbType = DbType.String;
 					p.Size = 4000;
 				}
-				else if (item.GetType() == typeof(ExpandoObject))
-				{
+				else if (item.GetType() == typeof(ExpandoObject)) {
 					var d = (IDictionary<string, object>)item;
 					p.Value = d.Values.FirstOrDefault();
 				}
-				else
-				{
+				else {
 					p.Value = item;
 				}
 				if (item.GetType() == typeof(string))
@@ -60,18 +67,15 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// Turns an IDataReader to a Dynamic list of things
 		/// </summary>
-		public static List<dynamic> ToExpandoList(this IDataReader rdr)
-		{
+		public static List<dynamic> ToExpandoList(this IDataReader rdr) {
 			var result = new List<dynamic>();
-			while (rdr.Read())
-			{
+			while (rdr.Read()) {
 				result.Add(rdr.RecordToExpando());
 			}
 			return result;
 		}
 
-		public static dynamic RecordToExpando(this IDataReader rdr)
-		{
+		public static dynamic RecordToExpando(this IDataReader rdr) {
 			dynamic e = new ExpandoObject();
 			var d = e as IDictionary<string, object>;
 			for (int i = 0; i < rdr.FieldCount; i++)
@@ -82,21 +86,17 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// Turns the object into an ExpandoObject
 		/// </summary>
-		public static dynamic ToExpando(this object o)
-		{
+		public static dynamic ToExpando(this object o) {
 			var result = new ExpandoObject();
 			var d = result as IDictionary<string, object>; //work with the Expando as a Dictionary
 			if (o.GetType() == typeof(ExpandoObject)) return o; //shouldn't have to... but just in case
-			if (o.GetType() == typeof(NameValueCollection) || o.GetType().IsSubclassOf(typeof(NameValueCollection)))
-			{
+			if (o.GetType() == typeof(NameValueCollection) || o.GetType().IsSubclassOf(typeof(NameValueCollection))) {
 				var nv = (NameValueCollection)o;
 				nv.Cast<string>().Select(key => new KeyValuePair<string, object>(key, nv[key])).ToList().ForEach(i => d.Add(i));
 			}
-			else
-			{
+			else {
 				var props = o.GetType().GetProperties();
-				foreach (var item in props)
-				{
+				foreach (var item in props) {
 					d.Add(item.Name, item.GetValue(o, null));
 				}
 			}
@@ -106,8 +106,7 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// Turns the object into a Dictionary
 		/// </summary>
-		public static IDictionary<string, object> ToDictionary(this object thingy)
-		{
+		public static IDictionary<string, object> ToDictionary(this object thingy) {
 			return (IDictionary<string, object>)thingy.ToExpando();
 		}
 	}
@@ -115,14 +114,11 @@ namespace Service.Core.Massive.PostgreSQL
 	/// <summary>
 	/// Convenience class for opening/executing data
 	/// </summary>
-	public static class DB
-	{
-		public static DynamicModel Current
-		{
-			get
-			{
-				if (ConfigurationManager.ConnectionStrings.Count > 1)
-				{
+	public static class DB {
+
+		public static DynamicModel Current {
+			get {
+				if (ConfigurationManager.ConnectionStrings.Count > 1) {
 					return new DynamicModel(ConfigurationManager.ConnectionStrings[1].Name);
 				}
 				throw new InvalidOperationException("Need a connection string name - can't determine what it is");
@@ -133,20 +129,17 @@ namespace Service.Core.Massive.PostgreSQL
 	/// <summary>
 	/// A class that wraps your database table in Dynamic Funtime
 	/// </summary>
-	public class DynamicModel : DynamicObject
-	{
+	public class DynamicModel : DynamicObject {
 		DbProviderFactory _factory;
 		string ConnectionString;
 
-		public static DynamicModel Open(string connectionStringName)
-		{
+		public static DynamicModel Open(string connectionStringName) {
 			dynamic dm = new DynamicModel(connectionStringName);
 			return dm;
 		}
 
 		public DynamicModel(string connectionStringName, string tableName = "",
-			string primaryKeyField = "", string descriptorField = "")
-		{
+			string primaryKeyField = "", string descriptorField = "") {
 			TableName = tableName == "" ? this.GetType().Name : tableName;
 			PrimaryKeyField = string.IsNullOrEmpty(primaryKeyField) ? "ID" : primaryKeyField;
 			DescriptorField = descriptorField;
@@ -158,17 +151,14 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// Creates a new Expando from a Form POST - white listed against the columns in the DB
 		/// </summary>
-		public dynamic CreateFrom(NameValueCollection coll)
-		{
+		public dynamic CreateFrom(NameValueCollection coll) {
 			dynamic result = new ExpandoObject();
 			var dc = (IDictionary<string, object>)result;
 			var schema = Schema;
 			//loop the collection, setting only what's in the Schema
-			foreach (var item in coll.Keys)
-			{
+			foreach (var item in coll.Keys) {
 				var exists = schema.Any(x => x.COLUMN_NAME.ToLower() == item.ToString().ToLower());
-				if (exists)
-				{
+				if (exists) {
 					var key = item.ToString();
 					var val = coll[key];
 					dc.Add(key, val);
@@ -180,24 +170,19 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// Gets a default value for the column
 		/// </summary>
-		public dynamic DefaultValue(dynamic column)
-		{
+		public dynamic DefaultValue(dynamic column) {
 			dynamic result = null;
 			string def = column.COLUMN_DEFAULT;
-			if (String.IsNullOrEmpty(def))
-			{
+			if (String.IsNullOrEmpty(def)) {
 				result = null;
 			}
-			else if (def == "getdate()" || def == "(getdate())")
-			{
+			else if (def == "getdate()" || def == "(getdate())") {
 				result = DateTime.Now.ToShortDateString();
 			}
-			else if (def == "newid()")
-			{
+			else if (def == "newid()") {
 				result = Guid.NewGuid().ToString();
 			}
-			else
-			{
+			else {
 				result = def.Replace("(", "").Replace(")", "");
 			}
 			return result;
@@ -206,14 +191,11 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// Creates an empty Expando set with defaults from the DB
 		/// </summary>
-		public dynamic Prototype
-		{
-			get
-			{
+		public dynamic Prototype {
+			get {
 				dynamic result = new ExpandoObject();
 				var schema = Schema;
-				foreach (dynamic column in schema)
-				{
+				foreach (dynamic column in schema) {
 					var dc = (IDictionary<string, object>)result;
 					dc.Add(column.COLUMN_NAME, DefaultValue(column));
 				}
@@ -229,10 +211,8 @@ namespace Service.Core.Massive.PostgreSQL
 		/// </summary>
 		IEnumerable<dynamic> _schema;
 
-		public IEnumerable<dynamic> Schema
-		{
-			get
-			{
+		public IEnumerable<dynamic> Schema {
+			get {
 				if (_schema == null)
 					_schema = Query("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = @0", TableName);
 				return _schema;
@@ -242,24 +222,18 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// Enumerates the reader yielding the result - thanks to Jeroen Haegebaert
 		/// </summary>
-		public virtual IEnumerable<dynamic> Query(string sql, params object[] args)
-		{
-			using (var conn = OpenConnection())
-			{
+		public virtual IEnumerable<dynamic> Query(string sql, params object[] args) {
+			using (var conn = OpenConnection()) {
 				var rdr = CreateCommand(sql, conn, args).ExecuteReader();
-				while (rdr.Read())
-				{
+				while (rdr.Read()) {
 					yield return rdr.RecordToExpando(); ;
 				}
 			}
 		}
 
-		public virtual IEnumerable<dynamic> Query(string sql, DbConnection connection, params object[] args)
-		{
-			using (var rdr = CreateCommand(sql, connection, args).ExecuteReader())
-			{
-				while (rdr.Read())
-				{
+		public virtual IEnumerable<dynamic> Query(string sql, DbConnection connection, params object[] args) {
+			using (var rdr = CreateCommand(sql, connection, args).ExecuteReader()) {
+				while (rdr.Read()) {
 					yield return rdr.RecordToExpando(); ;
 				}
 			}
@@ -268,11 +242,9 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// Returns a single result
 		/// </summary>
-		public virtual object Scalar(string sql, params object[] args)
-		{
+		public virtual object Scalar(string sql, params object[] args) {
 			object result = null;
-			using (var conn = OpenConnection())
-			{
+			using (var conn = OpenConnection()) {
 				result = CreateCommand(sql, conn, args).ExecuteScalar();
 			}
 			return result;
@@ -281,8 +253,7 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// Creates a DBCommand that you can use for loving your database.
 		/// </summary>
-		private DbCommand CreateCommand(string sql, DbConnection conn, params object[] args)
-		{
+		private DbCommand CreateCommand(string sql, DbConnection conn, params object[] args) {
 			var result = _factory.CreateCommand();
 			result.Connection = conn;
 			result.CommandText = sql;
@@ -294,8 +265,7 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// Returns and OpenConnection
 		/// </summary>
-		public virtual DbConnection OpenConnection()
-		{
+		public virtual DbConnection OpenConnection() {
 			var result = _factory.CreateConnection();
 			result.ConnectionString = ConnectionString;
 			result.Open();
@@ -307,45 +277,35 @@ namespace Service.Core.Massive.PostgreSQL
 		/// These objects can be POCOs, Anonymous, NameValueCollections, or Expandos. Objects
 		/// With a PK property (whatever PrimaryKeyField is set to) will be created at UPDATEs
 		/// </summary>
-		public virtual List<DbCommand> BuildCommands(params object[] things)
-		{
+		public virtual List<DbCommand> BuildCommands(params object[] things) {
 			var commands = new List<DbCommand>();
-			foreach (var item in things)
-			{
-				if (HasPrimaryKey(item))
-				{
+			foreach (var item in things) {
+				if (HasPrimaryKey(item)) {
 					commands.Add(CreateUpdateCommand(item, GetPrimaryKey(item)));
 				}
-				else
-				{
+				else {
 					commands.Add(CreateInsertCommand(item));
 				}
 			}
 			return commands;
 		}
 
-		public virtual int Execute(DbCommand command)
-		{
+		public virtual int Execute(DbCommand command) {
 			return Execute(new DbCommand[] { command });
 		}
 
-		public virtual int Execute(string sql, params object[] args)
-		{
+		public virtual int Execute(string sql, params object[] args) {
 			return Execute(CreateCommand(sql, null, args));
 		}
 
 		/// <summary>
 		/// Executes a series of DBCommands in a transaction
 		/// </summary>
-		public virtual int Execute(IEnumerable<DbCommand> commands)
-		{
+		public virtual int Execute(IEnumerable<DbCommand> commands) {
 			var result = 0;
-			using (var conn = OpenConnection())
-			{
-				using (var tx = conn.BeginTransaction())
-				{
-					foreach (var cmd in commands)
-					{
+			using (var conn = OpenConnection()) {
+				using (var tx = conn.BeginTransaction()) {
+					foreach (var cmd in commands) {
 						cmd.Connection = conn;
 						cmd.Transaction = tx;
 						result += cmd.ExecuteNonQuery();
@@ -362,8 +322,7 @@ namespace Service.Core.Massive.PostgreSQL
 		/// Conventionally introspects the object passed in for a field that
 		/// looks like a PK. If you've named your PrimaryKeyField, this becomes easy
 		/// </summary>
-		public virtual bool HasPrimaryKey(object o)
-		{
+		public virtual bool HasPrimaryKey(object o) {
 			return o.ToDictionary().ContainsKey(PrimaryKeyField);
 		}
 
@@ -371,8 +330,7 @@ namespace Service.Core.Massive.PostgreSQL
 		/// If the object passed in has a property with the same name as your PrimaryKeyField
 		/// it is returned here.
 		/// </summary>
-		public virtual object GetPrimaryKey(object o)
-		{
+		public virtual object GetPrimaryKey(object o) {
 			object result = null;
 			o.ToDictionary().TryGetValue(PrimaryKeyField, out result);
 			return result;
@@ -384,14 +342,12 @@ namespace Service.Core.Massive.PostgreSQL
 		/// Returns all records complying with the passed-in WHERE clause and arguments,
 		/// ordered as specified, limited (TOP) by limit.
 		/// </summary>
-		public virtual IEnumerable<dynamic> All(string where = "", string orderBy = "", int limit = 0, string columns = "*", params object[] args)
-		{
+		public virtual IEnumerable<dynamic> All(string where = "", string orderBy = "", int limit = 0, string columns = "*", params object[] args) {
 			string sql = BuildSelect(where, orderBy, limit);
 			return Query(string.Format(sql, columns, TableName), args);
 		}
 
-		private static string BuildSelect(string where, string orderBy, int limit)
-		{
+		private static string BuildSelect(string where, string orderBy, int limit) {
 			string sql = "SELECT {0} FROM {1} ";
 			if (!string.IsNullOrEmpty(where))
 				sql += where.Trim().StartsWith("where", StringComparison.OrdinalIgnoreCase) ? where : " WHERE " + where;
@@ -405,18 +361,15 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// Returns a dynamic PagedResult. Result properties are Items, TotalPages, and TotalRecords.
 		/// </summary>
-		public virtual dynamic Paged(string where = "", string orderBy = "", string columns = "*", int pageSize = 20, int currentPage = 1, params object[] args)
-		{
+		public virtual dynamic Paged(string where = "", string orderBy = "", string columns = "*", int pageSize = 20, int currentPage = 1, params object[] args) {
 			return BuildPagedResult(where: where, orderBy: orderBy, columns: columns, pageSize: pageSize, currentPage: currentPage, args: args);
 		}
 
-		public virtual dynamic Paged(string sql, string primaryKey, string where = "", string orderBy = "", string columns = "*", int pageSize = 20, int currentPage = 1, params object[] args)
-		{
+		public virtual dynamic Paged(string sql, string primaryKey, string where = "", string orderBy = "", string columns = "*", int pageSize = 20, int currentPage = 1, params object[] args) {
 			return BuildPagedResult(sql, primaryKey, where, orderBy, columns, pageSize, currentPage, args);
 		}
 
-		private dynamic BuildPagedResult(string sql = "", string primaryKeyField = "", string where = "", string orderBy = "", string columns = "*", int pageSize = 20, int currentPage = 1, params object[] args)
-		{
+		private dynamic BuildPagedResult(string sql = "", string primaryKeyField = "", string where = "", string orderBy = "", string columns = "*", int pageSize = 20, int currentPage = 1, params object[] args) {
 			dynamic result = new ExpandoObject();
 			var countSQL = "";
 			if (!string.IsNullOrEmpty(sql))
@@ -424,15 +377,12 @@ namespace Service.Core.Massive.PostgreSQL
 			else
 				countSQL = string.Format("SELECT COUNT({0}) FROM {1}", PrimaryKeyField, TableName);
 
-			if (String.IsNullOrEmpty(orderBy))
-			{
+			if (String.IsNullOrEmpty(orderBy)) {
 				orderBy = string.IsNullOrEmpty(primaryKeyField) ? " ORDER BY " + PrimaryKeyField : " ORDER BY " + primaryKeyField;
 			}
 
-			if (!string.IsNullOrEmpty(where))
-			{
-				if (!where.Trim().StartsWith("where", StringComparison.CurrentCultureIgnoreCase))
-				{
+			if (!string.IsNullOrEmpty(where)) {
+				if (!where.Trim().StartsWith("where", StringComparison.CurrentCultureIgnoreCase)) {
 					where = " WHERE " + where;
 				}
 			}
@@ -457,8 +407,7 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// Returns a single row from the database
 		/// </summary>
-		public virtual dynamic Single(string where, params object[] args)
-		{
+		public virtual dynamic Single(string where, params object[] args) {
 			var sql = string.Format("SELECT * FROM {0} WHERE {1}", TableName, where);
 			return Query(sql, args).FirstOrDefault();
 		}
@@ -466,8 +415,7 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// Returns a single row from the database
 		/// </summary>
-		public virtual dynamic Single(object key, string columns = "*")
-		{
+		public virtual dynamic Single(object key, string columns = "*") {
 			var sql = string.Format("SELECT {0} FROM {1} WHERE {2} = @0", columns, TableName, PrimaryKeyField);
 			return Query(sql, key).FirstOrDefault();
 		}
@@ -475,8 +423,7 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// This will return a string/object dictionary for dropdowns etc
 		/// </summary>
-		public virtual IDictionary<string, object> KeyValues(string orderBy = "")
-		{
+		public virtual IDictionary<string, object> KeyValues(string orderBy = "") {
 			if (String.IsNullOrEmpty(DescriptorField))
 				throw new InvalidOperationException("There's no DescriptorField set - do this in your constructor to describe the text value you want to see");
 			var sql = string.Format("SELECT {0},{1} FROM {2} ", PrimaryKeyField, DescriptorField, TableName);
@@ -490,14 +437,12 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// This will return an Expando as a Dictionary
 		/// </summary>
-		public virtual IDictionary<string, object> ItemAsDictionary(ExpandoObject item)
-		{
+		public virtual IDictionary<string, object> ItemAsDictionary(ExpandoObject item) {
 			return (IDictionary<string, object>)item;
 		}
 
 		//Checks to see if a key is present based on the passed-in value
-		public virtual bool ItemContainsKey(string key, ExpandoObject item)
-		{
+		public virtual bool ItemContainsKey(string key, ExpandoObject item) {
 			var dc = ItemAsDictionary(item);
 			return dc.ContainsKey(key);
 		}
@@ -507,12 +452,9 @@ namespace Service.Core.Massive.PostgreSQL
 		/// These objects can be POCOs, Anonymous, NameValueCollections, or Expandos. Objects
 		/// With a PK property (whatever PrimaryKeyField is set to) will be created at UPDATEs
 		/// </summary>
-		public virtual int Save(params object[] things)
-		{
-			foreach (var item in things)
-			{
-				if (!IsValid(item))
-				{
+		public virtual int Save(params object[] things) {
+			foreach (var item in things) {
+				if (!IsValid(item)) {
 					throw new InvalidOperationException("Can't save this item: " + String.Join("; ", Errors.ToArray()));
 				}
 			}
@@ -520,8 +462,7 @@ namespace Service.Core.Massive.PostgreSQL
 			return Execute(commands);
 		}
 
-		public virtual DbCommand CreateInsertCommand(dynamic expando)
-		{
+		public virtual DbCommand CreateInsertCommand(dynamic expando) {
 			DbCommand result = null;
 			var settings = (IDictionary<string, object>)expando;
 			var sbKeys = new StringBuilder();
@@ -529,15 +470,13 @@ namespace Service.Core.Massive.PostgreSQL
 			var stub = "INSERT INTO {0} ({1}) \r\n VALUES ({2})";
 			result = CreateCommand(stub, null);
 			int counter = 0;
-			foreach (var item in settings)
-			{
+			foreach (var item in settings) {
 				sbKeys.AppendFormat("{0},", item.Key);
 				sbVals.AppendFormat("@{0},", counter.ToString());
 				result.AddParam(item.Value);
 				counter++;
 			}
-			if (counter > 0)
-			{
+			if (counter > 0) {
 				var keys = sbKeys.ToString().Substring(0, sbKeys.Length - 1);
 				var vals = sbVals.ToString().Substring(0, sbVals.Length - 1);
 				var sql = string.Format(stub, TableName, keys, vals);
@@ -550,26 +489,22 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// Creates a command for use with transactions - internal stuff mostly, but here for you to play with
 		/// </summary>
-		public virtual DbCommand CreateUpdateCommand(dynamic expando, object key)
-		{
+		public virtual DbCommand CreateUpdateCommand(dynamic expando, object key) {
 			var settings = (IDictionary<string, object>)expando;
 			var sbKeys = new StringBuilder();
 			var stub = "UPDATE {0} SET {1} WHERE {2} = @{3}";
 			var args = new List<object>();
 			var result = CreateCommand(stub, null);
 			int counter = 0;
-			foreach (var item in settings)
-			{
+			foreach (var item in settings) {
 				var val = item.Value;
-				if (!item.Key.Equals(PrimaryKeyField, StringComparison.OrdinalIgnoreCase) && item.Value != null)
-				{
+				if (!item.Key.Equals(PrimaryKeyField, StringComparison.OrdinalIgnoreCase) && item.Value != null) {
 					result.AddParam(val);
 					sbKeys.AppendFormat("{0} = @{1}, \r\n", item.Key, counter.ToString());
 					counter++;
 				}
 			}
-			if (counter > 0)
-			{
+			if (counter > 0) {
 				//add the key
 				result.AddParam(key);
 				//strip the last commas
@@ -583,23 +518,19 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// Removes one or more records from the DB according to the passed-in WHERE
 		/// </summary>
-		public virtual DbCommand CreateDeleteCommand(string where = "", object key = null, params object[] args)
-		{
+		public virtual DbCommand CreateDeleteCommand(string where = "", object key = null, params object[] args) {
 			var sql = string.Format("DELETE FROM {0} ", TableName);
-			if (key != null)
-			{
+			if (key != null) {
 				sql += string.Format("WHERE {0}=@0", PrimaryKeyField);
 				args = new object[] { key };
 			}
-			else if (!string.IsNullOrEmpty(where))
-			{
+			else if (!string.IsNullOrEmpty(where)) {
 				sql += where.Trim().StartsWith("where", StringComparison.OrdinalIgnoreCase) ? where : "WHERE " + where;
 			}
 			return CreateCommand(sql, null, args);
 		}
 
-		public bool IsValid(dynamic item)
-		{
+		public bool IsValid(dynamic item) {
 			Errors.Clear();
 			Validate(item);
 			return Errors.Count == 0;
@@ -612,17 +543,13 @@ namespace Service.Core.Massive.PostgreSQL
 		/// Adds a record to the database. You can pass in an Anonymous object, an ExpandoObject,
 		/// A regular old POCO, or a NameValueColletion from a Request.Form or Request.QueryString
 		/// </summary>
-		public virtual dynamic Insert(object o)
-		{
+		public virtual dynamic Insert(object o) {
 			var ex = o.ToExpando();
-			if (!IsValid(ex))
-			{
+			if (!IsValid(ex)) {
 				throw new InvalidOperationException("Can't insert: " + String.Join("; ", Errors.ToArray()));
 			}
-			if (BeforeSave(ex))
-			{
-				using (dynamic conn = OpenConnection())
-				{
+			if (BeforeSave(ex)) {
+				using (dynamic conn = OpenConnection()) {
 					var cmd = CreateInsertCommand(ex);
 					cmd.Connection = conn;
 					cmd.ExecuteNonQuery();
@@ -632,8 +559,7 @@ namespace Service.Core.Massive.PostgreSQL
 				}
 				return ex;
 			}
-			else
-			{
+			else {
 				return null;
 			}
 		}
@@ -642,16 +568,13 @@ namespace Service.Core.Massive.PostgreSQL
 		/// Updates a record in the database. You can pass in an Anonymous object, an ExpandoObject,
 		/// A regular old POCO, or a NameValueCollection from a Request.Form or Request.QueryString
 		/// </summary>
-		public virtual int Update(object o, object key)
-		{
+		public virtual int Update(object o, object key) {
 			var ex = o.ToExpando();
-			if (!IsValid(ex))
-			{
+			if (!IsValid(ex)) {
 				throw new InvalidOperationException("Can't Update: " + String.Join("; ", Errors.ToArray()));
 			}
 			var result = 0;
-			if (BeforeSave(ex))
-			{
+			if (BeforeSave(ex)) {
 				result = Execute(CreateUpdateCommand(ex, key));
 				Updated(ex);
 			}
@@ -661,22 +584,18 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// Removes one or more records from the DB according to the passed-in WHERE
 		/// </summary>
-		public int Delete(object key = null, string where = "", params object[] args)
-		{
+		public int Delete(object key = null, string where = "", params object[] args) {
 			var deleted = this.Single(key);
 			var result = 0;
-			if (BeforeDelete(deleted))
-			{
+			if (BeforeDelete(deleted)) {
 				result = Execute(CreateDeleteCommand(where: where, key: key, args: args));
 				Deleted(deleted);
 			}
 			return result;
 		}
 
-		public void DefaultTo(string key, object value, dynamic item)
-		{
-			if (!ItemContainsKey(key, item))
-			{
+		public void DefaultTo(string key, object value, dynamic item) {
+			if (!ItemContainsKey(key, item)) {
 				var dc = (IDictionary<string, object>)item;
 				dc[key] = value;
 			}
@@ -696,8 +615,7 @@ namespace Service.Core.Massive.PostgreSQL
 		public virtual bool BeforeSave(dynamic item) { return true; }
 
 		//validation methods
-		public virtual void ValidatesPresenceOf(object value, string message = "Required")
-		{
+		public virtual void ValidatesPresenceOf(object value, string message = "Required") {
 			if (value == null)
 				Errors.Add(message);
 			if (String.IsNullOrEmpty(value.ToString()))
@@ -705,18 +623,15 @@ namespace Service.Core.Massive.PostgreSQL
 		}
 
 		//fun methods
-		public virtual void ValidatesNumericalityOf(object value, string message = "Should be a number")
-		{
+		public virtual void ValidatesNumericalityOf(object value, string message = "Should be a number") {
 			var type = value.GetType().Name;
 			var numerics = new string[] { "Int32", "Int16", "Int64", "Decimal", "Double", "Single", "Float" };
-			if (!numerics.Contains(type))
-			{
+			if (!numerics.Contains(type)) {
 				Errors.Add(message);
 			}
 		}
 
-		public virtual void ValidateIsCurrency(object value, string message = "Should be money")
-		{
+		public virtual void ValidateIsCurrency(object value, string message = "Should be money") {
 			if (value == null)
 				Errors.Add(message);
 			decimal val = decimal.MinValue;
@@ -725,13 +640,11 @@ namespace Service.Core.Massive.PostgreSQL
 				Errors.Add(message);
 		}
 
-		public int Count()
-		{
+		public int Count() {
 			return Count(TableName);
 		}
 
-		public int Count(string tableName, string where = "")
-		{
+		public int Count(string tableName, string where = "") {
 			// Scalar returns a long that has been casted to an object. Casting a boxed
 			// long directly to int throws InvalidCastException. This will successfully
 			// cast without changing the API.
@@ -742,15 +655,13 @@ namespace Service.Core.Massive.PostgreSQL
 		/// <summary>
 		/// A helpful query tool
 		/// </summary>
-		public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
-		{
+		public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result) {
 			//parse the method
 			var constraints = new List<string>();
 			var counter = 0;
 			var info = binder.CallInfo;
 			// accepting named args only... SKEET!
-			if (info.ArgumentNames.Count != args.Length)
-			{
+			if (info.ArgumentNames.Count != args.Length) {
 				throw new InvalidOperationException("Please use named arguments for this type of query - the column name, orderby, columns, etc");
 			}
 			//first should be "FindBy, Last, Single, First"
@@ -762,13 +673,10 @@ namespace Service.Core.Massive.PostgreSQL
 			var whereArgs = new List<object>();
 
 			//loop the named args - see if we have order, columns and constraints
-			if (info.ArgumentNames.Count > 0)
-			{
-				for (int i = 0; i < args.Length; i++)
-				{
+			if (info.ArgumentNames.Count > 0) {
+				for (int i = 0; i < args.Length; i++) {
 					var name = info.ArgumentNames[i].ToLower();
-					switch (name)
-					{
+					switch (name) {
 						case "orderby":
 							orderBy = " ORDER BY " + args[i];
 							break;
@@ -785,55 +693,44 @@ namespace Service.Core.Massive.PostgreSQL
 			}
 
 			//Build the WHERE bits
-			if (constraints.Count > 0)
-			{
+			if (constraints.Count > 0) {
 				where = " WHERE " + string.Join(" AND ", constraints.ToArray());  //This doesn't work so hot. turns into Where =@0 instead of actual arg
 			}
 			//probably a bit much here but... yeah this whole thing needs to be refactored...
-			if (op.ToLower() == "count")
-			{
+			if (op.ToLower() == "count") {
 				result = Scalar("SELECT COUNT(*) FROM " + TableName + where, whereArgs.ToArray());
 			}
-			else if (op.ToLower() == "sum")
-			{
+			else if (op.ToLower() == "sum") {
 				result = Scalar("SELECT SUM(" + columns + ") FROM " + TableName + where, whereArgs.ToArray());
 			}
-			else if (op.ToLower() == "max")
-			{
+			else if (op.ToLower() == "max") {
 				result = Scalar("SELECT MAX(" + columns + ") FROM " + TableName + where, whereArgs.ToArray());
 			}
-			else if (op.ToLower() == "min")
-			{
+			else if (op.ToLower() == "min") {
 				result = Scalar("SELECT MIN(" + columns + ") FROM " + TableName + where, whereArgs.ToArray());
 			}
-			else if (op.ToLower() == "avg")
-			{
+			else if (op.ToLower() == "avg") {
 				result = Scalar("SELECT AVG(" + columns + ") FROM " + TableName + where, whereArgs.ToArray());
 			}
-			else
-			{
+			else {
 				//build the SQL
 				sql = "SELECT " + columns + " FROM " + TableName + where + " limit 1;";
 				var justOne = op.StartsWith("First") || op.StartsWith("Last") || op.StartsWith("Get") || op.StartsWith("Single");
 
 				//Be sure to sort by DESC on the PK (PK Sort is the default)
-				if (op.StartsWith("Last"))
-				{
+				if (op.StartsWith("Last")) {
 					orderBy = orderBy + " DESC ";
 				}
-				else
-				{
+				else {
 					//default to multiple
 					sql = "SELECT " + columns + " FROM " + TableName + where;
 				}
 
-				if (justOne)
-				{
+				if (justOne) {
 					//return a single record
 					result = Query(sql + orderBy, whereArgs.ToArray()).FirstOrDefault();
 				}
-				else
-				{
+				else {
 					//return lots
 					result = Query(sql + orderBy, whereArgs.ToArray());
 				}

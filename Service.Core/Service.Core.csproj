@@ -206,7 +206,9 @@
     <Compile Include="WindowsService\WCF\WcfService.cs" />
     <Compile Include="WindowsService\WCF\WcfServiceHost.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Service.Core.licenseheader" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Log\LoggingEngine.config" />
   </ItemGroup>

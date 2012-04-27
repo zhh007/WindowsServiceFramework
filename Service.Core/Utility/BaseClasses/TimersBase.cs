@@ -1,14 +1,35 @@
-﻿using System;
+﻿#region
+
+// -----------------------------------------------------
+// MIT License
+// Copyright (C) 2012 John M. Baughman (jbaughmanphoto.com)
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or substantial
+// portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+// LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// -----------------------------------------------------
+
+#endregion
+
+using System;
 using System.Diagnostics;
 using System.Threading;
 using Service.Core.Utility.Utility;
 
-namespace Service.Core.Utility.BaseClasses
-{
-	public class Timers
-	{
-		public enum TimerIntervalSpanEnum
-		{
+namespace Service.Core.Utility.BaseClasses {
+	public class Timers {
+		public enum TimerIntervalSpanEnum {
 			Days,
 			Hours,
 			Minutes,
@@ -29,8 +50,7 @@ namespace Service.Core.Utility.BaseClasses
 		/// Starts the timer.
 		/// </summary>
 		/// <param name="timerCallback">The timer callback.</param>
-		public static void StartTimer(TimerCallback timerCallback)
-		{
+		public static void StartTimer(TimerCallback timerCallback) {
 			TimerCallback = timerCallback;
 			StartTimer(Settings.Instance.UseSchedule ? Settings.DefaultScheduleTimerInterval : Settings.Instance.TimerInterval);
 			Settings.Instance.IsRunning = false;
@@ -41,8 +61,7 @@ namespace Service.Core.Utility.BaseClasses
 		/// </summary>
 		/// <param name="timerCallback">The timer callback.</param>
 		/// <param name="interval">The interval.</param>
-		public static void StartTimer(TimerCallback timerCallback, int interval)
-		{
+		public static void StartTimer(TimerCallback timerCallback, int interval) {
 			TimerCallback = timerCallback;
 			StartTimer(interval);
 		}
@@ -51,18 +70,14 @@ namespace Service.Core.Utility.BaseClasses
 		/// Starts the timer.
 		/// </summary>
 		/// <param name="interval">The interval.</param>
-		public static void StartTimer(int interval)
-		{
+		public static void StartTimer(int interval) {
 			Logging.Log(Log.LogLevelEnum.Debug, string.Format("Settings.Instance.IsHub = {0}", Settings.Instance.IsHub));
 			Logging.Log(Log.LogLevelEnum.Debug, string.Format("Settings.Instance.IsHubWithExtensionLoaded = {0}", Settings.Instance.IsHubWithExtensionLoaded));
 			Logging.Log(Log.LogLevelEnum.Debug, string.Format("!Settings.Instance.IsHub || Settings.Instance.IsHubWithExtensionLoaded = {0}", !Settings.Instance.IsHub || Settings.Instance.IsHubWithExtensionLoaded));
-			if (!Settings.Instance.IsHub || Settings.Instance.IsHubWithExtensionLoaded)
-			{
-				if (Timer == null)
-				{
+			if (!Settings.Instance.IsHub || Settings.Instance.IsHubWithExtensionLoaded) {
+				if (Timer == null) {
 					Logging.Log(Log.LogLevelEnum.Info, "Starting timer");
-					if (TimerCallback == null)
-					{
+					if (TimerCallback == null) {
 						Exception ex = new Exception("TimerCallback not defined.");
 						Logging.Log(Log.LogLevelEnum.Fatal, ex.Message);
 						Logging.HandleException(ex);
@@ -72,8 +87,7 @@ namespace Service.Core.Utility.BaseClasses
 
 					Logging.Log(Log.LogLevelEnum.Debug, string.Format("interval = {0}\n\tIntervalSpan = {1}", interval, Settings.Instance.TimerIntervalSpan));
 
-					switch (Settings.Instance.TimerIntervalSpan)
-					{
+					switch (Settings.Instance.TimerIntervalSpan) {
 						case TimerIntervalSpanEnum.Days:
 							interval = (interval * 86400) * 1000;	// (interval * seconds in a day) * milliseconds in a second
 							break;
@@ -93,8 +107,7 @@ namespace Service.Core.Utility.BaseClasses
 					Logging.Log(Log.LogLevelEnum.Info, "Timer started");
 				}
 			}
-			else
-			{
+			else {
 				Logging.Log(Log.LogLevelEnum.Info, "Service is hub with no extensions: No timer started.");
 			}
 		}
@@ -102,8 +115,7 @@ namespace Service.Core.Utility.BaseClasses
 		/// <summary>
 		/// Stops the timer.
 		/// </summary>
-		public static void StopTimer()
-		{
+		public static void StopTimer() {
 			Logging.Log(Log.LogLevelEnum.Info, "Stopping timer");
 			Timer.Dispose();
 			Logging.Log(Log.LogLevelEnum.Info, "Timer stopped");
@@ -112,8 +124,7 @@ namespace Service.Core.Utility.BaseClasses
 		/// <summary>
 		/// Starts the stop watch.
 		/// </summary>
-		public static void StartStopWatch()
-		{
+		public static void StartStopWatch() {
 			Logging.Log(Log.LogLevelEnum.Info, "Starting stopwatch");
 			Stopwatch = new Stopwatch();
 			Stopwatch.Start();
@@ -124,8 +135,7 @@ namespace Service.Core.Utility.BaseClasses
 		/// Stops the stopwatch.
 		/// </summary>
 		/// <returns>TimeSpan</returns>
-		public static TimeSpan StopStopwatch()
-		{
+		public static TimeSpan StopStopwatch() {
 			Logging.Log(Log.LogLevelEnum.Info, "Stopping stopwatch");
 			Stopwatch.Stop();
 			Logging.Log(Log.LogLevelEnum.Info, "Stopwatch stopped");
@@ -137,8 +147,7 @@ namespace Service.Core.Utility.BaseClasses
 		/// </summary>
 		/// <param name="timeSpan">The time span.</param>
 		/// <returns>string</returns>
-		public static string FormatTimeSpan(TimeSpan timeSpan)
-		{
+		public static string FormatTimeSpan(TimeSpan timeSpan) {
 			return string.Format("{0:00}:{1:00}:{2:00}.{3:00}:{4:00}", timeSpan.Days, timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds / 10);
 		}
 	}

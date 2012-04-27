@@ -1,4 +1,28 @@
-﻿using System;
+﻿#region
+
+// -----------------------------------------------------
+// MIT License
+// Copyright (C) 2012 John M. Baughman (jbaughmanphoto.com)
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or substantial
+// portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+// LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// -----------------------------------------------------
+
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -14,7 +38,6 @@ using SC_StatusDb = Service.Core.StatusDatabase;
 using SC_Svc = Service.Core.WindowsService.Service;
 
 namespace SelfInstallingWindowsServiceAdmin {
-
 	internal static class Program {
 
 		/// <summary>
@@ -101,20 +124,20 @@ namespace SelfInstallingWindowsServiceAdmin {
 						if (adminFromHub) {
 							Logging.Log(LogLevelEnum.Info, string.Format("Setting up hub administration of {0}", Settings.Instance.ServiceDisplayName));
 							OpenFileDialog openFileDialog = new OpenFileDialog {
-									FileName = Path.GetFileName(Settings.DefaultServiceStatusDbFileName),
-									Filter = "Service Status Database (*.db)|*.db",
-									Title = "Locate Service Status Database"
-								};
+								FileName = Path.GetFileName(Settings.DefaultServiceStatusDbFileName),
+								Filter = "Service Status Database (*.db)|*.db",
+								Title = "Locate Service Status Database"
+							};
 
 							if (openFileDialog.ShowDialog() == DialogResult.OK) {
 								Logging.Log(LogLevelEnum.Debug, string.Format("Service status database path: {0}", openFileDialog.FileName));
 								Settings.Instance.SetServiceStatusDatabasePath(openFileDialog.FileName);
 								int serviceId = SC_StatusDb.DatabaseInstaller.InitializeService(new SC_StatusDb.Service {
-																										ServiceName = Settings.Instance.ServiceName,
-																										ServiceDescription = Settings.Instance.ServiceDescription,
-																										ServiceDisplayName = Settings.Instance.ServiceDisplayName,
-																										ServiceStatusDatabasePath = Settings.Instance.ServiceStatusDatabasePath
-																									},
+									ServiceName = Settings.Instance.ServiceName,
+									ServiceDescription = Settings.Instance.ServiceDescription,
+									ServiceDisplayName = Settings.Instance.ServiceDisplayName,
+									ServiceStatusDatabasePath = Settings.Instance.ServiceStatusDatabasePath
+								},
 																					Settings.Instance.LoggerConfiguration);
 								if (serviceId > -1) {
 									Settings.Instance.ServiceId = serviceId;

@@ -1,4 +1,28 @@
-﻿using System;
+﻿#region
+
+// -----------------------------------------------------
+// MIT License
+// Copyright (C) 2012 John M. Baughman (jbaughmanphoto.com)
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or substantial
+// portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+// LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// -----------------------------------------------------
+
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -8,10 +32,8 @@ using Service.Core.Log;
 using Service.Core.Log.Configuration;
 using SC_BaseClasses = Service.Core.Utility.BaseClasses;
 
-namespace Service.Core.ServiceAdmin.Utility
-{
-	public class Settings : SC_BaseClasses.SettingsBase
-	{
+namespace Service.Core.ServiceAdmin.Utility {
+	public class Settings : SC_BaseClasses.SettingsBase {
 		private static readonly Lazy<Settings> instance = new Lazy<Settings>(() => new Settings());
 
 		public static DataTable ServiceConfiguration { get; private set; }
@@ -23,17 +45,13 @@ namespace Service.Core.ServiceAdmin.Utility
 
 		#region Logging configuration
 
-		public FileLoggerConfiguration ServiceLoggerConfiguration
-		{
-			get
-			{
+		public FileLoggerConfiguration ServiceLoggerConfiguration {
+			get {
 				LoadConfiguration(ServiceConfigFile);
 				FileLoggerConfiguration retConfig = new FileLoggerConfiguration();
 
-				foreach (DataRow row in ServiceConfiguration.Rows)
-				{
-					switch (row["Key"].ToString())
-					{
+				foreach (DataRow row in ServiceConfiguration.Rows) {
+					switch (row["Key"].ToString()) {
 						case LogFileKey:
 							retConfig.LogFileName = row["Value"].ToString();
 							break;
@@ -60,17 +78,13 @@ namespace Service.Core.ServiceAdmin.Utility
 
 		#endregion Logging configuration
 
-		public override int ServiceId
-		{
-			get
-			{
+		public override int ServiceId {
+			get {
 				LoadConfiguration(ServiceConfigFile);
 				int serviceId = -1;
 
-				foreach (DataRow row in ServiceConfiguration.Rows)
-				{
-					if (row["Key"].ToString() == ServiceIdKey && !string.IsNullOrEmpty(ServiceStatusDatabasePath))
-					{
+				foreach (DataRow row in ServiceConfiguration.Rows) {
+					if (row["Key"].ToString() == ServiceIdKey && !string.IsNullOrEmpty(ServiceStatusDatabasePath)) {
 						int.TryParse(row["Value"].ToString(), out serviceId);
 						break;
 					}
@@ -79,8 +93,7 @@ namespace Service.Core.ServiceAdmin.Utility
 				UnloadConfiguration();
 				return serviceId;
 			}
-			set
-			{
+			set {
 				LoadConfiguration(ServiceConfigFile);
 				UpdateConfiguration(ServiceIdKey, value.ToString());
 				SaveConfiguration(ServiceConfigFile, null);
@@ -88,8 +101,7 @@ namespace Service.Core.ServiceAdmin.Utility
 			}
 		}
 
-		public override void SetServiceStatusDatabasePath(string databasePath)
-		{
+		public override void SetServiceStatusDatabasePath(string databasePath) {
 			Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 			config.AppSettings.Settings.Remove(ServiceStatusDatabasePathKey);
 			config.AppSettings.Settings.Add(ServiceStatusDatabasePathKey, databasePath);
@@ -104,16 +116,13 @@ namespace Service.Core.ServiceAdmin.Utility
 
 		private Settings() { }
 
-		public static Settings Instance
-		{
-			get
-			{
+		public static Settings Instance {
+			get {
 				return instance.Value;
 			}
 		}
 
-		public void LoadConfiguration(string configurationFile)
-		{
+		public void LoadConfiguration(string configurationFile) {
 			Logging.Log(LogLevelEnum.Debug, "Loading service configuration");
 			ServiceConfiguration = new DataTable("config");
 			ServiceConfiguration.Columns.Add(new DataColumn(serviceConfigColumnKey, typeof(string)));
@@ -122,8 +131,7 @@ namespace Service.Core.ServiceAdmin.Utility
 			DataColumn[] key = { ServiceConfiguration.Columns[0] };
 			ServiceConfiguration.PrimaryKey = key;
 
-			try
-			{
+			try {
 				// Load the XML configuration
 				XmlDocument xmlDoc = Utilities.LoadXmlDocument(configurationFile);
 				XmlNode configuration = xmlDoc.SelectSingleNode("configuration");
@@ -133,11 +141,9 @@ namespace Service.Core.ServiceAdmin.Utility
 				//for (int y = 0; y < sectionList.Count; y++)
 				//{
 				XmlNodeList settingsList = xmlDoc.SelectNodes("configuration/" + sectionName + "/add");
-				if (settingsList.Count != 0 && settingsList != null)
-				{
+				if (settingsList.Count != 0 && settingsList != null) {
 					//Add a property to customClass for each node found.
-					for (int i = 0; i < settingsList.Count; i++)
-					{
+					for (int i = 0; i < settingsList.Count; i++) {
 						XmlAttribute attribKey = settingsList[i].Attributes["key"];
 						XmlAttribute attribValue = settingsList[i].Attributes["value"];
 
@@ -152,22 +158,18 @@ namespace Service.Core.ServiceAdmin.Utility
 				xmlDoc = null;
 				Logging.Log(LogLevelEnum.Debug, string.Format("Service configuration loaded: {0} keys", ServiceConfiguration.Rows.Count));
 			}
-			catch
-			{
+			catch {
 				throw;
 			}
 		}
 
-		public void UnloadConfiguration()
-		{
+		public void UnloadConfiguration() {
 			ServiceConfiguration.Rows.Clear();
 			ServiceConfiguration = null;
 		}
 
-		public void SaveConfiguration(string configurationFile, DataTable configTable)
-		{
-			try
-			{
+		public void SaveConfiguration(string configurationFile, DataTable configTable) {
+			try {
 				Logging.Log(LogLevelEnum.Debug, "Saving service configuration");
 				//Reload the configuration file
 				XmlDocument xmlDoc = Utilities.LoadXmlDocument(configurationFile);
@@ -178,30 +180,25 @@ namespace Service.Core.ServiceAdmin.Utility
 				Utilities.SaveXmlDocument(xmlDoc, configurationFile);
 				Logging.Log(LogLevelEnum.Debug, string.Format("Service configuration saved: {0} keys", ServiceConfiguration.Rows.Count));
 			}
-			catch
-			{
+			catch {
 				throw;
 			}
 		}
 
-		private void RepopulateXmlSection(XmlDocument xmlDoc)
-		{
+		private void RepopulateXmlSection(XmlDocument xmlDoc) {
 			XmlNodeList nodes = xmlDoc.SelectNodes("configuration/" + sectionName + "/add");
-			for (int i = 0; i < nodes.Count; i++)
-			{
+			for (int i = 0; i < nodes.Count; i++) {
 				//Find the property in the property collection with the same name as the current node in the Xml document
 				DataRow dr = ServiceConfiguration.Rows.Find(nodes[i].Attributes["key"].Value);
 
-				if (!dr[serviceConfigColumnValue].ToString().Equals(dr[serviceConfigColumnOriginalValue].ToString()))
-				{
+				if (!dr[serviceConfigColumnValue].ToString().Equals(dr[serviceConfigColumnOriginalValue].ToString())) {
 					//Set the node value to the property value (which will have been set in the Property grid.
 					nodes[i].Attributes["value"].Value = dr[serviceConfigColumnValue].ToString();
 				}
 			}
 		}
 
-		public void UpdateConfiguration(string key, string value)
-		{
+		public void UpdateConfiguration(string key, string value) {
 			DataRow dr = ServiceConfiguration.Rows.Find(key);
 
 			// TODO: For future use...
@@ -217,16 +214,13 @@ namespace Service.Core.ServiceAdmin.Utility
 			dr[serviceConfigColumnValue] = value;
 		}
 
-		public List<SC_BaseClasses.ConfigurationKey> GetServiceConfiguration()
-		{
+		public List<SC_BaseClasses.ConfigurationKey> GetServiceConfiguration() {
 			LoadConfiguration(ServiceConfigFile);
 
 			List<SC_BaseClasses.ConfigurationKey> configSettings = new List<SC_BaseClasses.ConfigurationKey>();
 
-			foreach (DataRow row in ServiceConfiguration.Rows)
-			{
-				configSettings.Add(new SC_BaseClasses.ConfigurationKey
-				{
+			foreach (DataRow row in ServiceConfiguration.Rows) {
+				configSettings.Add(new SC_BaseClasses.ConfigurationKey {
 					Section = "appSettings",
 					Key = row[serviceConfigColumnKey].ToString(),
 					Value = row[serviceConfigColumnValue].ToString(),
@@ -237,54 +231,41 @@ namespace Service.Core.ServiceAdmin.Utility
 			return configSettings;
 		}
 
-		public List<string> Dependencies
-		{
-			get
-			{
+		public List<string> Dependencies {
+			get {
 				return GetResourceList("Dependency_");
 			}
 		}
 
-		public List<string> LoggingDependencies
-		{
-			get
-			{
+		public List<string> LoggingDependencies {
+			get {
 				return GetResourceList("Logging_");
 			}
 		}
 
-		public string ServiceFile
-		{
-			get
-			{
+		public string ServiceFile {
+			get {
 				return GetResourceManager().GetString("ServiceFile");
 			}
 		}
 
-		public string ServiceConfigFile
-		{
-			get
-			{
+		public string ServiceConfigFile {
+			get {
 				return GetResourceManager().GetString("ServiceConfigFile");
 			}
 		}
 
-		public string DependencyPrefix
-		{
-			get
-			{
+		public string DependencyPrefix {
+			get {
 				return GetResourceManager().GetString("DependencyPrefix");
 			}
 		}
 
-		public List<SC_BaseClasses.ConfigurationKey> GetAdminConfiguration()
-		{
+		public List<SC_BaseClasses.ConfigurationKey> GetAdminConfiguration() {
 			List<SC_BaseClasses.ConfigurationKey> configSettings = new List<SC_BaseClasses.ConfigurationKey>();
 
-			foreach (string configItem in ConfigurationManager.AppSettings)
-			{
-				configSettings.Add(new SC_BaseClasses.ConfigurationKey
-				{
+			foreach (string configItem in ConfigurationManager.AppSettings) {
+				configSettings.Add(new SC_BaseClasses.ConfigurationKey {
 					Section = "appSettings",
 					Key = configItem,
 					Value = ConfigurationManager.AppSettings[configItem],

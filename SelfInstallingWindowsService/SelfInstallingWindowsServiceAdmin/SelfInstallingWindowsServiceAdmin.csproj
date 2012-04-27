@@ -97,6 +97,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="SelfInstallingWindowsServiceAdmin.licenseheader" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\..\Dependencies\log4net\log4net.dll">

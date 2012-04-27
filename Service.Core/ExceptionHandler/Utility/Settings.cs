@@ -1,10 +1,32 @@
-﻿using System.Net.Mail;
+﻿#region
+
+// -----------------------------------------------------
+// MIT License
+// Copyright (C) 2012 John M. Baughman (jbaughmanphoto.com)
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or substantial
+// portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+// LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// -----------------------------------------------------
+
+#endregion
+
+using System.Net.Mail;
 using System.Reflection;
 
-namespace Service.Core.ExceptionHandler.Utility
-{
-	internal class Settings : ConfigurationHandler
-	{
+namespace Service.Core.ExceptionHandler.Utility {
+	internal class Settings : ConfigurationHandler {
 		// Constants we will be using
 		public readonly string ViewStateKey = "__VIEWSTATE";
 		public readonly string RootException = "System.Web.HttpUnhandledException";
@@ -42,14 +64,11 @@ namespace Service.Core.ExceptionHandler.Utility
 
 		public string EmailToList { get { return GetString("EmailToAddressList"); } }
 
-		public MailAddressCollection EmailToAddressList
-		{
-			get
-			{
+		public MailAddressCollection EmailToAddressList {
+			get {
 				string[] to = GetString("EmailToAddressList", string.Empty).Split(';');
 				MailAddressCollection toAddresses = new MailAddressCollection();
-				for (int i = 0; i < to.Length; i++)
-				{
+				for (int i = 0; i < to.Length; i++) {
 					toAddresses.Add(new MailAddress(to[i]));
 				}
 
@@ -73,18 +92,13 @@ namespace Service.Core.ExceptionHandler.Utility
 
 		private Assembly parentAssembly = null;
 
-		public Assembly ParentAssembly
-		{
-			get
-			{
-				if (parentAssembly == null)
-				{
-					if (Assembly.GetEntryAssembly() == null)
-					{
+		public Assembly ParentAssembly {
+			get {
+				if (parentAssembly == null) {
+					if (Assembly.GetEntryAssembly() == null) {
 						parentAssembly = Assembly.GetCallingAssembly();
 					}
-					else
-					{
+					else {
 						parentAssembly = Assembly.GetEntryAssembly();
 					}
 				}

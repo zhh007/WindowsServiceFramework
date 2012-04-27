@@ -1,87 +1,109 @@
-﻿using SC_SAdminUi = Service.Core.ServiceAdmin.UI;
+﻿#region
 
-namespace MonitorServiceAdmin.UI
-{
-    public partial class frmLogViewer : SC_SAdminUi.frmLogViewer
-    {
-        //public frmLogViewer()
-        //{
-        //    InitializeComponent();
-        //    InitializeControls();
+// -----------------------------------------------------
+// MIT License
+// Copyright (C) 2012 John M. Baughman (jbaughmanphoto.com)
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or substantial
+// portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+// LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+// -----------------------------------------------------
 
-        //    this.Text = Settings.Instance.ServiceDisplayName + " Log Viewer";
-        //}
+#endregion
 
-        //private void InitializeControls()
-        //{
-        //    #region Logs list
+using SC_SAdminUi = Service.Core.ServiceAdmin.UI;
 
-        //    List<LogToView> logs = new List<LogToView>();
+namespace MonitorServiceAdmin.UI {
+	public partial class frmLogViewer : SC_SAdminUi.frmLogViewer {
+		//public frmLogViewer()
+		//{
+		//    InitializeComponent();
+		//    InitializeControls();
 
-        //    string[] logNames = Enum.GetNames(typeof(LogEnum));
-        //    var logValues = (LogEnum[])Enum.GetValues(typeof(LogEnum));
+		//    this.Text = Settings.Instance.ServiceDisplayName + " Log Viewer";
+		//}
 
-        //    for (int i = 0; i < logNames.Length; i++)
-        //    {
-        //        logs.Add(new LogToView { Text = logNames[i], Value = logValues[i] });
-        //    }
+		//private void InitializeControls()
+		//{
+		//    #region Logs list
 
-        //    cboLog.DataSource = logs;
-        //    cboLog.DisplayMember = "Text";
-        //    cboLog.ValueMember = "Value";
+		//    List<LogToView> logs = new List<LogToView>();
 
-        //    #endregion Logs list
+		//    string[] logNames = Enum.GetNames(typeof(LogEnum));
+		//    var logValues = (LogEnum[])Enum.GetValues(typeof(LogEnum));
 
-        //    #region Filters list
+		//    for (int i = 0; i < logNames.Length; i++)
+		//    {
+		//        logs.Add(new LogToView { Text = logNames[i], Value = logValues[i] });
+		//    }
 
-        //    List<LogFilter> filters = new List<LogFilter>();
+		//    cboLog.DataSource = logs;
+		//    cboLog.DisplayMember = "Text";
+		//    cboLog.ValueMember = "Value";
 
-        //    filters.Add(new LogFilter { Text = "All", Value = 0 });
+		//    #endregion Logs list
 
-        //    string[] logLevelNames = Enum.GetNames(typeof(LogLevelEnum));
-        //    var logLevelValues = (LogLevelEnum[])Enum.GetValues(typeof(LogLevelEnum));
+		//    #region Filters list
 
-        //    for (int i = 0; i < logLevelNames.Length; i++)
-        //    {
-        //        filters.Add(new LogFilter { Text = logLevelNames[i], Value = logLevelValues[i] });
-        //    }
+		//    List<LogFilter> filters = new List<LogFilter>();
 
-        //    cboFilter.DataSource = filters;
-        //    cboFilter.DisplayMember = "Text";
-        //    cboFilter.ValueMember = "Value";
+		//    filters.Add(new LogFilter { Text = "All", Value = 0 });
 
-        //    #endregion Filters list
-        //}
+		//    string[] logLevelNames = Enum.GetNames(typeof(LogLevelEnum));
+		//    var logLevelValues = (LogLevelEnum[])Enum.GetValues(typeof(LogLevelEnum));
 
-        //private void cmdFilter_Click(object sender, EventArgs e)
-        //{
-        //    if ((int)cboFilter.SelectedValue == 0)
-        //    {
-        //        grdLog.DataSource = Logging.Parse((LogEnum)cboLog.SelectedValue);
-        //    }
-        //    else
-        //    {
-        //        grdLog.DataSource = Logging.Parse((LogEnum)cboLog.SelectedValue, (LogLevelEnum)cboFilter.SelectedValue);
-        //    }
-        //}
+		//    for (int i = 0; i < logLevelNames.Length; i++)
+		//    {
+		//        filters.Add(new LogFilter { Text = logLevelNames[i], Value = logLevelValues[i] });
+		//    }
 
-        //private class LogFilter
-        //{
-        //    public string Text { get; set; }
+		//    cboFilter.DataSource = filters;
+		//    cboFilter.DisplayMember = "Text";
+		//    cboFilter.ValueMember = "Value";
 
-        //    public LogLevelEnum Value { get; set; }
-        //}
+		//    #endregion Filters list
+		//}
 
-        //private class LogToView
-        //{
-        //    public string Text { get; set; }
+		//private void cmdFilter_Click(object sender, EventArgs e)
+		//{
+		//    if ((int)cboFilter.SelectedValue == 0)
+		//    {
+		//        grdLog.DataSource = Logging.Parse((LogEnum)cboLog.SelectedValue);
+		//    }
+		//    else
+		//    {
+		//        grdLog.DataSource = Logging.Parse((LogEnum)cboLog.SelectedValue, (LogLevelEnum)cboFilter.SelectedValue);
+		//    }
+		//}
 
-        //    public LogEnum Value { get; set; }
-        //}
+		//private class LogFilter
+		//{
+		//    public string Text { get; set; }
 
-        //private void frmLogViewer_Load(object sender, EventArgs e)
-        //{
-        //    this.ActiveControl = cboLog;
-        //}
-    }
+		//    public LogLevelEnum Value { get; set; }
+		//}
+
+		//private class LogToView
+		//{
+		//    public string Text { get; set; }
+
+		//    public LogEnum Value { get; set; }
+		//}
+
+		//private void frmLogViewer_Load(object sender, EventArgs e)
+		//{
+		//    this.ActiveControl = cboLog;
+		//}
+	}
 }
